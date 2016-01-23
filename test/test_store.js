@@ -136,10 +136,20 @@ describe("lib/store", () => {
       });
     });
     it("Searches first in the cache instead of making request.", () => {
-      let bob = store.createRecord('person', {id: 1, name: 'bob'}, true);
-      let sam = store.createRecord('person', {id: 2, name: 'sam'}, true);
-      return store.all('person').then((records) => {
+      let bob = store.createRecord('person', {name: 'bob'});
+      let sam = store.createRecord('person', {name: 'sam'});
+      return Promise.all([bob.save(), sam.save()]).then((dataList) => {
+        return store.all('person');  // Should set .fetchedAll flag to true.
+      }).then((records) => {
         records.should.eql([bob, sam]);
+        bob.setState({name: 'bob1'});
+        sam.setState({name: 'sam1'});
+        // Adapter shouldn't be needed here because store should fetch from cache.
+        store.props.adapter = undefined;
+        return store.all('person');
+      }).then((records) => {
+        records.find(record => record.state.name == 'bob1').should.eql(bob);
+        records.find(record => record.state.name == 'sam1').should.eql(sam);
       });
     });
   });
