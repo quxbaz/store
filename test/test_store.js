@@ -28,15 +28,6 @@ describe("lib/store", () => {
     });
   });
 
-  it("Deletes a record", () => {
-    let bob = store.createRecord('person', {name: 'bob'});
-    return bob.save().then(() => {
-      return bob.destroy();
-    }).then(() => {
-      server.bin.all('/person/').should.eql([]);
-    });
-  });
-
   it("Updates a record.", () => {
     let bob = store.createRecord('person', {name: 'bob'});
     let id;
@@ -60,25 +51,6 @@ describe("lib/store", () => {
     });
   });
 
-  it("Deletes multiple records.", () => {
-    let bob = store.createRecord('person', {name: 'bob'});
-    let will = store.createRecord('person', {name: 'will'});
-    return Promise.all([bob.save(), will.save()]).then(() => {
-      return Promise.all([bob.destroy(), will.destroy()]);
-    }).then(() => {
-      server.bin.all('/person/').should.eql([]);
-    });
-  });
-
-  it("Fetches a single record.", () => {
-    return server.post('/person/', {name: 'bob'}).then((data) => {
-      return store.get('person', data.id);
-    }).then((record) => {
-      record.state.id.should.exist;
-      record.state.name.should.eql('bob');
-    });
-  });
-
   it("Fetches multiple records.", () => {
     return Promise.all([
       store.createRecord('person', {name: 'bob'}).save(),
@@ -92,14 +64,32 @@ describe("lib/store", () => {
     });
   });
 
-  it("Caches a fetched resource as a record.", () => {
-    server.bin.set('/person/1', {id: 1, name: 'bob'});
-    let compare;
-    return store.get('person', 1).then((record) => {
-      compare = record;
-      return store.get('person', 1);
-    }).then((record) => {
-      (compare === record).should.be.true;
+  it("Does not cache a record until it's saved.", () => {
+    let record = store.createRecord('person', {name: 'bob'});
+    store._cache.person.has(record).should.be.false;
+    return record.save().then(() => {
+      store._cache.person.has(record).should.be.true;
+    });
+  });
+
+  describe(".get()", () => {
+    it("Fetches a single record.", () => {
+      return server.post('/person/', {name: 'bob'}).then((data) => {
+        return store.get('person', data.id);
+      }).then((record) => {
+        record.state.id.should.exist;
+        record.state.name.should.eql('bob');
+      });
+    });
+    it("Caches a fetched resource as a record.", () => {
+      server.bin.set('/person/1', {id: 1, name: 'bob'});
+      let compare;
+      return store.get('person', 1).then((record) => {
+        compare = record;
+        return store.get('person', 1);
+      }).then((record) => {
+        (compare === record).should.be.true;
+      });
     });
   });
 
@@ -154,17 +144,39 @@ describe("lib/store", () => {
     });
   });
 
-  it("Does not cache a record until it's saved.", () => {
-    let record = store.createRecord('person', {name: 'bob'});
-    store._cache.person.has(record).should.be.false;
-    return record.save().then(() => {
-      store._cache.person.has(record).should.be.true;
+  describe(".destroyRecord()", () => {
+    it("Deletes a record", () => {
+      let bob = store.createRecord('person', {name: 'bob'});
+      return bob.save().then(() => {
+        return bob.destroy();
+      }).then(() => {
+        server.bin.all('/person/').should.eql([]);
+      });
     });
-  });
-
-  it("Removes a record from the cache on destruction.", () => {
-    // <TODO>
-    false.should.be.true;
+    it("Deletes multiple records.", () => {
+      let bob = store.createRecord('person', {name: 'bob'});
+      let will = store.createRecord('person', {name: 'will'});
+      return Promise.all([bob.save(), will.save()]).then(() => {
+        return Promise.all([bob.destroy(), will.destroy()]);
+      }).then(() => {
+        server.bin.all('/person/').should.eql([]);
+      });
+    });
+    it("Removes a record from the store cache and underlying datastore on destruction.", () => {
+      let bob = store.createRecord('person', {name: 'bob'});
+      return bob.save().then((data) => {
+        store._cache['person'].size.should.eql(1);
+        localStorage.length.should.eql(1);
+        store.props.adapter = undefined;
+        return store.get('person', data.id);
+      }).then(() => {
+        store.props.adapter = adapter;
+        return bob.destroy();
+      }).then(() => {
+        store._cache['person'].size.should.eql(0);
+        localStorage.length.should.eql(0);
+      });
+    });
   });
 
   describe(".cache()", () => {
