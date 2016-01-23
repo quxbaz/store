@@ -92,4 +92,45 @@ describe("lib/store", () => {
     });
   });
 
+  it("Caches a fetched resource as a record.", () => {
+    server.bin.set('/person/1', {id: 1, name: 'bob'});
+    let compare;
+    return store.get('person', 1).then((record) => {
+      compare = record;
+      return store.get('person', 1);
+    }).then((record) => {
+      (compare === record).should.be.true;
+    });
+  });
+
+  it("Caches multiple records.", () => {
+    server.bin.set('/person/1', {n: 1});
+    server.bin.set('/person/2', {n: 2});
+    server.bin.set('/person/3', {n: 3});
+    let compare;
+    return store.all('person').then((records) => {
+      compare = records;
+      return store.all('person');
+    }).then((records) => {
+      records.forEach((record, i) => {
+        (record === compare[i]).should.be.true;
+      });
+    });
+  });
+
+  it("Caches any record it creates.", () => {
+    // <TODO> This should succeed, but what we're doing is searching
+    // by id when it only exists after a save.
+    let record = store.createRecord('person', {name: 'bob'});
+    // let record = store.createRecord('person', {id: 1, name: 'bob'});
+    return store.get('person', 1).then((fetched) => {
+      (record === fetched).should.be.true;
+    });
+  });
+
+  it("Removes a record from the cache on destruction.", () => {
+    // <TODO>
+    false.should.be.true;
+  });
+
 });
