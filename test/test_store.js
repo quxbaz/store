@@ -118,19 +118,25 @@ describe("lib/store", () => {
     });
   });
 
-  it("Caches any record it creates.", () => {
-    // <TODO> This should succeed, but what we're doing is searching
-    // by id when it only exists after a save.
+  it("Does not cache a record until it's saved.", () => {
     let record = store.createRecord('person', {name: 'bob'});
-    // let record = store.createRecord('person', {id: 1, name: 'bob'});
-    return store.get('person', 1).then((fetched) => {
-      (record === fetched).should.be.true;
+    store._cache.person.has(record).should.be.false;
+    return record.save().then(() => {
+      store._cache.person.has(record).should.be.true;
     });
   });
 
   it("Removes a record from the cache on destruction.", () => {
     // <TODO>
     false.should.be.true;
+  });
+
+  describe(".cache()", () => {
+    it("Caches a record.", () => {
+      let record = store.createRecord('person', {id: 42});
+      store.cache(record);
+      store.searchCache('person', 42).should.eql(record);
+    });
   });
 
 });
