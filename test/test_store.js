@@ -103,17 +103,43 @@ describe("lib/store", () => {
     });
   });
 
-  it("Caches multiple records.", () => {
-    server.bin.set('/person/1', {n: 1});
-    server.bin.set('/person/2', {n: 2});
-    server.bin.set('/person/3', {n: 3});
-    let compare;
-    return store.all('person').then((records) => {
-      compare = records;
-      return store.all('person');
-    }).then((records) => {
-      records.forEach((record, i) => {
-        (record === compare[i]).should.be.true;
+  describe(".all()", () => {
+    it("Caches multiple records.", () => {
+      server.bin.set('/person/1', {n: 1});
+      server.bin.set('/person/2', {n: 2});
+      server.bin.set('/person/3', {n: 3});
+      let compare;
+      return store.all('person').then((records) => {
+        compare = records;
+        return store.all('person');
+      }).then((records) => {
+        records.forEach((record, i) => {
+          (record === compare[i]).should.be.true;
+        });
+      });
+    });
+    it("Caches any new records and persists pre-existing ones.", () => {
+      // This record should be in the returned data set.
+      let bob = store.createRecord('person', {name: 'bob'});
+      server.bin.set('/person/2', {id: 2, name: 'yola'});
+      server.bin.set('/person/3', {id: 3, name: 'gene'});
+      return bob.save().then(() => {
+        return store.all('person');
+      }).then((records) => {
+        records.includes(bob).should.be.true;
+        return store.get('person', 2);
+      }).then((yola) => {
+        yola.state.should.eql({id: 2, name: 'yola'});
+        return store.get('person', 3);
+      }).then((gene) => {
+        gene.state.should.eql({id: 3, name: 'gene'});
+      });
+    });
+    it("Searches first in the cache instead of making request.", () => {
+      let bob = store.createRecord('person', {id: 1, name: 'bob'}, true);
+      let sam = store.createRecord('person', {id: 2, name: 'sam'}, true);
+      return store.all('person').then((records) => {
+        records.should.eql([bob, sam]);
       });
     });
   });
