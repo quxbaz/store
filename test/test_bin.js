@@ -1,4 +1,3 @@
-import {clearLS} from 'lib/util';
 import Bin from 'lib/bin';
 
 let LS = localStorage;
@@ -10,7 +9,7 @@ describe("lib/bin", () => {
   let bin;
 
   beforeEach(() => {
-    clearLS();
+    LS.clear();
     bin = new Bin();
   });
 
