@@ -44,7 +44,7 @@ describe("lib/bin", () => {
     ]);
   });
 
-  it("constructor populates cache with localStorage entries.", () => {
+  it("Constructor populates cache with localStorage entries.", () => {
     LS.setItem('person', str({name: 'george'}));
     let bin = new Bin();
     bin.cache.should.eql({
@@ -54,7 +54,7 @@ describe("lib/bin", () => {
     });
   });
 
-  it("defines a custom separator.", () => {
+  it("Defines a custom separator.", () => {
     let bin = new Bin({sep: '--'});
     bin.set('foo/bar', 'qux', {you: 'there'});
     parse(localStorage.getItem('foo/bar--qux')).should.eql({you: 'there'});
@@ -87,7 +87,7 @@ describe("lib/bin", () => {
     bin.get('favorites::food').should.eql({oats: 'oats'});
   });
 
-  it("deletes a key from the cache and localStorage.", () => {
+  it("Deletes a key from the cache and localStorage.", () => {
     bin.set('dogs', 'bowow', {food: 'kibble'});
     bin.erase('dogs::bowow');
     (bin.get('dogs', 'bowow') === undefined).should.be.true;

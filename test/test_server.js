@@ -15,27 +15,27 @@ describe("lib/adapters/server", (done) => {
     beforeEach(() => {
       x = 0;
     });
-    it("routes to GET", () => {
+    it("Routes to GET", () => {
       server.get = () => x++;
       server.request('/foo', {method: 'GET'});
       x.should.eql(1);
     });
-    it("routes to POST", () => {
+    it("Routes to POST", () => {
       server.post = () => x++;
       server.request('/foo', {method: 'POST'});
       x.should.eql(1);
     });
-    it("routes to PUT", () => {
+    it("Routes to PUT", () => {
       server.put = () => x++;
       server.request('/foo', {method: 'PUT'});
       x.should.eql(1);
     });
-    it("routes to DELETE", () => {
+    it("Routes to DELETE", () => {
       server.delete = () => x++;
       server.request('/foo', {method: 'DELETE'});
       x.should.eql(1);
     });
-    it("throws an error on omitting a method.", () => {
+    it("Throws an error on omitting a method.", () => {
       (() => {
         server.request('/foo');
       }).should.throw();
