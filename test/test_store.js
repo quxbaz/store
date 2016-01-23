@@ -58,4 +58,13 @@ describe("lib/store", () => {
     });
   });
 
+  it("Fetches a single record.", () => {
+    return server.post('/person/', {name: 'bob'}).then((data) => {
+      return store.get('person', data.id);
+    }).then((record) => {
+      record.state.id.should.exist;
+      record.state.name.should.eql('bob');
+    });
+  });
+
 });
