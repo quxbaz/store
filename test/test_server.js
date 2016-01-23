@@ -17,25 +17,25 @@ describe("lib/adapters/server", (done) => {
     });
     it("routes to GET", () => {
       server.get = () => x++;
-      server.request('/foo', {type: 'GET'});
+      server.request('/foo', {method: 'GET'});
       x.should.eql(1);
     });
     it("routes to POST", () => {
       server.post = () => x++;
-      server.request('/foo', {type: 'POST'});
+      server.request('/foo', {method: 'POST'});
       x.should.eql(1);
     });
     it("routes to PUT", () => {
       server.put = () => x++;
-      server.request('/foo', {type: 'PUT'});
+      server.request('/foo', {method: 'PUT'});
       x.should.eql(1);
     });
     it("routes to DELETE", () => {
       server.delete = () => x++;
-      server.request('/foo', {type: 'DELETE'});
+      server.request('/foo', {method: 'DELETE'});
       x.should.eql(1);
     });
-    it("throws an error on omitting a type.", () => {
+    it("throws an error on omitting a method.", () => {
       (() => {
         server.request('/foo');
       }).should.throw();
