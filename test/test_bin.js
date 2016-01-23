@@ -83,4 +83,15 @@ describe("lib/bin", () => {
     });
   });
 
+  it('Calls .set() and .get() with the default parser.', () => {
+    bin.set('favorites::food', {oats: 'oats'});
+    bin.get('favorites::food').should.eql({oats: 'oats'});
+  });
+
+  it("deletes a key from the cache and localStorage.", () => {
+    bin.set('dogs', 'bowow', {food: 'kibble'});
+    bin.erase('dogs::bowow');
+    (bin.get('dogs', 'bowow') === undefined).should.be.true;
+  });
+
 });
