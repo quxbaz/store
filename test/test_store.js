@@ -37,6 +37,18 @@ describe("lib/store", () => {
     });
   });
 
+  it("Updates a record.", () => {
+    let bob = store.createRecord('person', {name: 'bob'});
+    let id;
+    return bob.save().then(() => {
+      id = bob.state.id;
+      return bob.save({name: 'big bob'});
+    }).then(() => {
+      (bob.state.id == id).should.be.true;
+      bob.state.name.should.eql('big bob');
+    });
+  });
+
   it("Saves multiple records.", () => {
     let bob = store.createRecord('person', {name: 'bob'});
     let will = store.createRecord('person', {name: 'will'});
@@ -64,6 +76,20 @@ describe("lib/store", () => {
     }).then((record) => {
       record.state.id.should.exist;
       record.state.name.should.eql('bob');
+    });
+  });
+
+  it("Fetches multiple records.", () => {
+    return Promise.all([
+      store.createRecord('person', {name: 'bob'}).save(),
+      store.createRecord('person', {name: 'will'}).save()
+    ]).then(() => {
+      store.all('person').then((persons) => {
+        console.log(persons);
+        persons.length.should.eql(2);
+        persons[0].state.name.should.eql('bob');
+        persons[1].state.name.should.eql('will');
+      });
     });
   });
 
