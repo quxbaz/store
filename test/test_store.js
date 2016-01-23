@@ -84,8 +84,7 @@ describe("lib/store", () => {
       store.createRecord('person', {name: 'bob'}).save(),
       store.createRecord('person', {name: 'will'}).save()
     ]).then(() => {
-      store.all('person').then((persons) => {
-        console.log(persons);
+      return store.all('person').then((persons) => {
         persons.length.should.eql(2);
         persons[0].state.name.should.eql('bob');
         persons[1].state.name.should.eql('will');
