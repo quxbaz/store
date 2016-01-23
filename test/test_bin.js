@@ -55,6 +55,25 @@ describe("lib/bin", () => {
     });
   });
 
+  it("defines a custom separator.", () => {
+    let bin = new Bin({sep: '--'});
+    bin.set('foo/bar', 'qux', {you: 'there'});
+    parse(localStorage.getItem('foo/bar--qux')).should.eql({you: 'there'});
+  });
+
+  it("Calls .get() with a parser defined.", () => {
+    let bin = new Bin({parser: Bin.URL_PARSER});
+    bin.set('all/the/people/', '1', {yo: 'there'});
+    bin.get('all/the/people/1').should.eql({yo: 'there'});
+  });
+
+  it("Calls .set() with a parser defined.", () => {
+    let bin = new Bin({parser: Bin.URL_PARSER});
+    bin.set('all/the/people/1', {hey: 'you'});
+    bin.get('all/the/people/1').should.eql({hey: 'you'});
+    bin.get('all/the/people/', 1).should.eql({hey: 'you'});
+  });
+
   describe("bin#set", () => {
     it("Sets a value in cache and localStorage.", () => {
       bin.set('dogs', 'poochy', {name: 'poochy'});
