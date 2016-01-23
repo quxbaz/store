@@ -33,7 +33,7 @@ describe("lib/bin", () => {
     bin.set('cats', '1', {name: 'mittens'});
     bin.set('cats', '2', {name: 'buttons'});
     bin.set('cats', '3', {name: 'heartburn'});
-    bin.get('cats').should.eql([
+    bin.all('cats').should.eql([
       {name: 'mittens'},
       {name: 'buttons'},
       {name: 'heartburn'}
