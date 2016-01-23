@@ -5,7 +5,7 @@ var resolve = path.resolve;
 var config = {
 
   cache: true,
-  devtool: 'cheap-source-map',
+  devtool: 'source-map',
   entry: 'test/test.js',
 
   output: {
