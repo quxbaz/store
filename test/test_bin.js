@@ -55,20 +55,6 @@ describe("lib/bin", () => {
     });
   });
 
-  it("fetches from localStorage when an item is not cached.", () => {
-    LS.setItem('person::bob', str({age: 42}));
-    bin.get('person', 'bob').should.eql({age: 42});
-  });
-
-  it("fetches from localStorage when an item is not cached with multiple queries.", () => {
-    LS.setItem('person::bob', str({age: 42}));
-    LS.setItem('person::myla', str({age: 30}));
-    bin.get('person').should.eql([
-      {age: 42},
-      {age: 30}
-    ]);
-  });
-
   describe("bin#set", () => {
     it("Sets a value in cache and localStorage.", () => {
       bin.set('dogs', 'poochy', {name: 'poochy'});
