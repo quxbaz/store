@@ -26,7 +26,7 @@ describe("lib/util", () => {
   });
 
   describe("uuid()", () => {
-    it.skip("Generates 10,000 random ids.", () => {
+    it("Generates 10,000 random ids.", () => {
       let ids = new Set();
       for (let i=0; i < 10000; i++)
         ids.add(util.uuid());
