@@ -15,6 +15,10 @@ describe("lib/store", () => {
     store.registerModel('person', '/person/');
   })
 
+  it("Throws an error on not providing an adapter.", () => {
+    (() => new Store()).should.throw();
+  });
+
   it("Saves a record.", () => {
     let bob = store.createRecord('person', {
       name: 'bob',
