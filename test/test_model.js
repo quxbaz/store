@@ -32,7 +32,7 @@ describe("lib/model", () => {
     });
   });
 
-  describe.only("relations", () => {
+  describe("relations", () => {
 
     beforeEach(() => {
       store.registerModel('zoo', '/zoo/', {
@@ -52,41 +52,15 @@ describe("lib/model", () => {
       }).should.throw();
     });
 
-    it("Gets a list of model-relations.", () => {
-      store.registerModel('chain', '/chain/', {
-        markets: hasMany('market')
-      });
-      store.registerModel('market', '/market/', {
-        chain: belongsTo('chain')
-      });
-      store.getModelDeps('chain').should.eql(['chain', 'market']);
-    });
-
-    it("Gets a larger list of model-relations.", () => {
-      store.registerModel('chain', '/chain/', {
-        managers: hasMany('manager'),
-        markets: hasMany('market')
-      });
-      store.registerModel('manager', '/manager/', {
-        chain: belongsTo('chain')
-      });
-      store.registerModel('market', '/market/', {
-        chain: belongsTo('chain'),
-        items: hasMany('item')
-      });
-      store.registerModel('item', '/item/', {
-        market: belongsTo('market')
-      });
-      store.getModelDeps('chain').should.eql(['chain', 'manager', 'market', 'item']);
-    });
-
     it("Gets a record and it's subrecords.", () => {
-      let zoo_id = 1;
-      server.bin.set('/cat/2', {zoo_id, name: 'mittens'});
-      server.bin.set('/cat/3', {zoo_id, name: 'whiskers'});
+      server.bin.set('/cat/1', {id: 1, name: 'mittens'});
+      server.bin.set('/cat/2', {id: 2, name: 'whiskers'});
       return store.get('zoo', 1).then((zoo) => {
-        zoo.hasMany.cats.find(cat => cat.id === 2).state.name.should.eql('mittens');
-        zoo.hasMany.cats.find(cat => cat.id === 3).state.name.should.eql('whiskers');
+        return zoo.get('cats');
+      }).then((cats) => {
+        cats.length.should.eql(2);
+        cats.find(cat => cat.state.id === 1).name.should.eql('mittens');
+        cats.find(cat => cat.state.id === 2).name.should.eql('whiskers');
       });
     });
 
