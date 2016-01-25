@@ -34,4 +34,36 @@ describe("lib/util", () => {
     });
   });
 
+  describe("each", () => {
+    it("Iterates through an object.", () => {
+      let o = {
+        a: 1,
+        b: 2,
+        c: 3
+      };
+      let sumVal = 0;
+      let sumKey = '';
+      util.each(o, (val, key) => {
+        sumVal += val;
+        sumKey += key;
+      });
+      sumVal.should.eql(6);
+      sumKey.split('').sort().join('').should.eql('abc');
+    });
+    it("Exits early.", () => {
+      let o = {
+        a: 1,
+        b: 2,
+        c: 3
+      };
+      let sum = 0;
+      util.each(o, (val, key) => {
+        sum += val;
+        return false;
+      });
+      console.log(sum);
+      (sum <= 3).should.be.true;
+    });
+  });
+
 });
