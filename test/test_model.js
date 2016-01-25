@@ -52,15 +52,24 @@ describe("lib/model", () => {
       }).should.throw();
     });
 
-    it("Gets a record and it's subrecords.", () => {
-      server.bin.set('/cat/1', {id: 1, name: 'mittens'});
-      server.bin.set('/cat/2', {id: 2, name: 'whiskers'});
+    it("Gets a record and its hasMany records.", () => {
+      server.bin.set('/cat/2', {id: 2, zoo: 1, name: 'mittens'});
+      server.bin.set('/cat/3', {id: 3, zoo: 1, name: 'whiskers'});
       return store.get('zoo', 1).then((zoo) => {
         return zoo.get('cats');
       }).then((cats) => {
         cats.length.should.eql(2);
-        cats.find(cat => cat.state.id === 1).name.should.eql('mittens');
-        cats.find(cat => cat.state.id === 2).name.should.eql('whiskers');
+        cats.find(cat => cat.state.id === 2).state.name.should.eql('mittens');
+        cats.find(cat => cat.state.id === 3).state.name.should.eql('whiskers');
+      });
+    });
+
+    it("Gets a record's belongsTo records.", () => {
+      server.bin.set('/cat/2', {id: 2, zoo: 1, name: 'mittens'});
+      return store.get('cat', 2).then((cat) => {
+        return cat.get('zoo');
+      }).then((zoo) => {
+        zoo.state.city.should.eql('chicago');
       });
     });
 
