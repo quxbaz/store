@@ -61,7 +61,6 @@ describe("lib/util", () => {
         sum += val;
         return false;
       });
-      console.log(sum);
       (sum <= 3).should.be.true;
     });
   });
