@@ -93,7 +93,6 @@ describe("lib/model", () => {
       return store.get('zoo', 1).then(
         zoo => zoo.get('cats')
       ).then((cats) => {
-        console.log(cats);
         cats.map(cat => cat.state.name).sort()
           .should.eql(['a', 'b', 'c']);
       })
@@ -111,7 +110,18 @@ describe("lib/model", () => {
       });
     });
 
-    it("Strips the belongsTo relation if the record has not been persisted.", () => {
+    it("Does not strip a belongsTo schema relation if the record is persisted.", () => {
+      let zoo = store.createRecord('zoo', {city: 'berlin'});
+      let cat = store.createRecord('cat');
+      return zoo.save().then((data) => {
+        cat.setState({zoo: data.id});
+        cat.saveData().should.eql({
+          zoo: data.id
+        });
+      });
+    });
+
+    it("Strips the belongsTo schema relation if the record has not been persisted.", () => {
       let zoo = store.createRecord('zoo', {city: 'berlin'})
       let brambles = store.createRecord('cat', {
         zoo: zoo.cid,
@@ -126,13 +136,10 @@ describe("lib/model", () => {
         name: 'salty',
         zoo: zoo.cid
       });
-      return zoo.save().then(() => {
-        // zoo now has an id and is persisted, so salty should save
-        // with zoo.state.id
-        // <TODO>
+      return zoo.save().then((data) => {
         salty.saveData().should.eql({
           name: 'salty',
-          zoo: zoo.state.id
+          zoo: data.id
         });
       });
     });
