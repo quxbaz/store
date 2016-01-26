@@ -72,20 +72,7 @@ describe("lib/model", () => {
       });
     });
 
-    it("Keeps saved and unsaved hasMany records.", () => {
-      let yowzers = store.createRecord('cat', {zoo: 1, name: 'yowzers'});
-      return store.get('zoo').then(
-        () => yowzers.get('zoo')
-      ).then(
-        zoo => zoo.get('cats')
-      ).then((cats) => {
-        let names = cats.map(cat => cat.state.name);
-        names.sort().should.eql(['mittens', 'whiskers', 'yowzers']);
-      });
-    });
-
     it("Gets an unsaved belongsTo record.", () => {
-      false.should.eql(true);
       let zoo = store.createRecord('zoo', {city: 'bronx'});
       return store.createRecord('cat', {
         zoo: zoo.cid,
@@ -93,6 +80,34 @@ describe("lib/model", () => {
       }).get('zoo').then((record) => {
         record.state.city.should.eql('bronx');
         record.should.eql(zoo);
+      });
+    });
+
+    it("Gets only unsaved hasMany records.", () => {
+      localStorage.clear();
+      server.bin.cache = {};
+      server.bin.set('/zoo/1', {id: 1});
+      let a = store.createRecord('cat', {zoo: 1, name: 'a'});
+      let b = store.createRecord('cat', {zoo: 1, name: 'b'});
+      let c = store.createRecord('cat', {zoo: 1, name: 'c'});
+      return store.get('zoo', 1).then(
+        zoo => zoo.get('cats')
+      ).then((cats) => {
+        console.log(cats);
+        cats.map(cat => cat.state.name).sort()
+          .should.eql(['a', 'b', 'c']);
+      })
+    });
+
+    it("Gets saved and unsaved hasMany records.", () => {
+      let yowzers = store.createRecord('cat', {zoo: 1, name: 'yowzers'});
+      return store.get('zoo', 1).then(
+        () => yowzers.get('zoo')
+      ).then(
+        zoo => zoo.get('cats')
+      ).then((cats) => {
+        let names = cats.map(cat => cat.state.name);
+        names.sort().should.eql(['mittens', 'whiskers', 'yowzers']);
       });
     });
 
