@@ -74,6 +74,9 @@ describe("lib/store", () => {
   });
 
   describe(".get()", () => {
+    it("Throws an error when calling without an id.", () => {
+      (() => store.get('person')).should.throw();
+    });
     it("Fetches a single record.", () => {
       return server.post('/person/', {name: 'bob'}).then((data) => {
         return store.get('person', data.id);
@@ -95,6 +98,10 @@ describe("lib/store", () => {
   });
 
   describe(".all()", () => {
+    it("Throws an error when calling with an extra argument[s].", () => {
+      (() => store.all('person', 1)).should.throw();
+      (() => store.all('person', 1, 2)).should.throw();
+    });
     it("Caches multiple records.", () => {
       server.bin.set('/person/1', {n: 1});
       server.bin.set('/person/2', {n: 2});
