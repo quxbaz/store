@@ -79,7 +79,7 @@ describe("lib/util", () => {
     });
   });
 
-  describe.only("byId()", () => {
+  describe("byId()", () => {
     let byId = util.byId;
     it("Always returns false on providing undefined for id.", () => {
       byId()().should.eql(false);
