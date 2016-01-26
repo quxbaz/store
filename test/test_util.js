@@ -34,7 +34,7 @@ describe("lib/util", () => {
     });
   });
 
-  describe("each", () => {
+  describe("each()", () => {
     it("Iterates through an object.", () => {
       let o = {
         a: 1,
@@ -63,6 +63,15 @@ describe("lib/util", () => {
       });
       console.log(sum);
       (sum <= 3).should.be.true;
+    });
+  });
+
+  describe("without()", () => {
+    it("Removes keys from an object.", () => {
+      util.without({a:1, b:2, c:3}, 'c').should.eql({a:1, b:2})
+      util.without({a:1, b:2, c:3}, ['a']).should.eql({b:2, c:3})
+      util.without({a:1, b:2, c:3}, ['a', 'b']).should.eql({c:3})
+      util.without({a:1, b:2, c:3}, ['a', 'b', 'c']).should.eql({})
     });
   });
 
