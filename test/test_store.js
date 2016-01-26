@@ -184,10 +184,13 @@ describe("lib/store", () => {
   });
 
   describe(".cache()", () => {
-    it("Caches a record.", () => {
+    it("Caches a record and searches it by id.", () => {
       let record = store.createRecord('person', {id: 42});
-      store.cache(record);
       store.searchCache('person', 42).should.eql(record);
+    });
+    it("Searches a cached record by cid.", () => {
+      let record = store.createRecord('person');
+      store.searchCache('person', record.cid).should.eql(record);
     });
   });
 
