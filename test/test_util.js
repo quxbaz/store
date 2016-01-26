@@ -62,4 +62,45 @@ describe("lib/util", () => {
     });
   });
 
+  describe("hasId()", () => {
+    it("It tests if a function has an undefined id.", () => {
+      let record = {state: {}};
+      util.hasId(record, 1).should.be.false;
+    });
+    it("It tests if a function has an id.", () => {
+      let record = {state: {id: 1}};
+      util.hasId(record, 2).should.be.false;
+      util.hasId(record, 1).should.be.true;
+    });
+    it("It tests if a function has a cid.", () => {
+      let record = {cid: 1, state: {}};
+      util.hasId(record, 2).should.be.false;
+      util.hasId(record, 1).should.be.true;
+    });
+  });
+
+  describe.only("byId()", () => {
+    let byId = util.byId;
+    it("Always returns false on providing undefined for id.", () => {
+      byId()().should.eql(false);
+      byId(undefined)().should.eql(false);
+    });
+    it("Finds a record by id.", () => {
+      let records = [
+        {state: {id: 1}},
+        {state: {id: 2}}
+      ];
+      records.find(byId(1)).should.eql(records[0]);
+      byId(1)(records[0]).should.be.true
+    });
+    it("Finds a record by cid.", () => {
+      let records = [
+        {cid: 'a', state: {id: 1}},
+        {cid: 'b', state: {id: 2}}
+      ];
+      records.find(byId('b')).should.eql(records[1]);
+      byId('b')(records[1]).should.be.true
+    });
+  });
+
 });
