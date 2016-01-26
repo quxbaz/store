@@ -115,7 +115,7 @@ describe("lib/model", () => {
       let cat = store.createRecord('cat');
       return zoo.save().then((data) => {
         cat.setState({zoo: data.id});
-        cat.saveData().should.eql({
+        cat.toJSON().should.eql({
           zoo: data.id
         });
       });
@@ -127,7 +127,7 @@ describe("lib/model", () => {
         zoo: zoo.cid,
         name: 'brambles'
       });
-      brambles.saveData().should.eql({name: 'brambles'});
+      brambles.toJSON().should.eql({name: 'brambles'});
     });
 
     it("Convert cid relations to id values when saving unpersisted records.", () => {
@@ -137,7 +137,7 @@ describe("lib/model", () => {
         zoo: zoo.cid
       });
       return zoo.save().then((data) => {
-        salty.saveData().should.eql({
+        salty.toJSON().should.eql({
           name: 'salty',
           zoo: data.id
         });
