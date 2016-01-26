@@ -144,6 +144,26 @@ describe("lib/model", () => {
       });
     });
 
+    it("Gets unpersisted hasMany records from an unpersisted record.", () => {
+      let zoo = store.createRecord('zoo');
+      let cat = store.createRecord('cat', {zoo: zoo.cid});
+      return zoo.get('cats').then((cats) => {
+        cats[0].should.eql(cat);
+      });
+    });
+
+    it("Sets a hasMany record's belongTo relation to undefined and does not count it as a reference.", () => {
+      let zoo = store.createRecord('zoo');
+      let cat = store.createRecord('cat', {zoo: zoo.cid});
+      return zoo.get('cats').then((cats) => {
+        cats[0].should.eql(cat);
+        cat.state.zoo = undefined;
+        return zoo.get('cats');
+      }).then((cats) => {
+        cats.should.eql([]);
+      });
+    });
+
   });
 
 });
