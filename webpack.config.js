@@ -28,7 +28,10 @@ var config = {
 
   resolve: {
     root: resolve(__dirname),
-    extensions: ['', '.js']
+    extensions: ['', '.js'],
+    alias: {
+      'store': resolve(__dirname)
+    }
   }
 
 };
