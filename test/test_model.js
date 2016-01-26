@@ -120,6 +120,23 @@ describe("lib/model", () => {
       brambles.saveData().should.eql({name: 'brambles'});
     });
 
+    it("Convert cid relations to id values when saving unpersisted records.", () => {
+      let zoo = store.createRecord('zoo');
+      let salty = store.createRecord('cat', {
+        name: 'salty',
+        zoo: zoo.cid
+      });
+      return zoo.save().then(() => {
+        // zoo now has an id and is persisted, so salty should save
+        // with zoo.state.id
+        // <TODO>
+        salty.saveData().should.eql({
+          name: 'salty',
+          zoo: zoo.state.id
+        });
+      });
+    });
+
   });
 
 });
