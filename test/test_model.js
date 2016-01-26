@@ -24,6 +24,9 @@ describe("lib/model", () => {
   });
 
   describe("constructor", () => {
+    it("Throws an error on not providing a url.", () => {
+      create('cat').should.throw();
+    });
     it("@url needs to end and begin with a slash.", () => {
       create('cat', 'cats/').should.throw();
       create('cat', '/cats').should.throw();
