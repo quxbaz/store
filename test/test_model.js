@@ -164,6 +164,18 @@ describe("lib/model", () => {
       });
     });
 
+    it("Detaches a belongsTo record.", () => {
+      let zoo = store.createRecord('zoo');
+      let cat = store.createRecord('cat', {zoo: zoo.cid});
+      return zoo.get('cats').then((cats) => {
+        cats[0].should.eql(cat);
+        cat.detach('zoo');
+        return zoo.get('cats');
+      }).then((cats) => {
+        cats.should.eql([]);
+      });
+    });
+
   });
 
 });
