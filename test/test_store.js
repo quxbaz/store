@@ -68,12 +68,9 @@ describe("lib/store", () => {
     });
   });
 
-  it("Does not cache a record until it's saved.", () => {
-    let record = store.createRecord('person', {name: 'bob'});
+  it("Does not cache a record if told explicitly told not to.", () => {
+    let record = store.createRecord('person', {name: 'bob'}, false);
     store._cache.person.has(record).should.be.false;
-    return record.save().then(() => {
-      store._cache.person.has(record).should.be.true;
-    });
   });
 
   describe(".get()", () => {
