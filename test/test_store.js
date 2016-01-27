@@ -152,6 +152,22 @@ describe("lib/store", () => {
     });
   });
 
+  describe.only(".one()", () => {
+    it("Fetches a single model.", () => {
+      server.bin.set('/person/1', {name: 'bob'});
+      return store.one('person').then((record) => {
+        record.state.name.should.eql('bob');
+      });
+    });
+    it("Throws an error if more than one model is fetched.", (done) => {
+      server.bin.set('/person/1', {name: 'bob'});
+      server.bin.set('/person/2', {name: 'sam'});
+      store.one('person').catch((error) => {
+        done();
+      });
+    });
+  });
+
   describe(".destroyRecord()", () => {
     it("Deletes a record", () => {
       let bob = store.createRecord('person', {name: 'bob'});
