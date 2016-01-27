@@ -152,7 +152,7 @@ describe("lib/store", () => {
     });
   });
 
-  describe.only(".one()", () => {
+  describe(".one()", () => {
     it("Fetches a single model.", () => {
       server.bin.set('/person/1', {name: 'bob'});
       return store.one('person').then((record) => {
