@@ -166,6 +166,11 @@ describe("lib/store", () => {
         done();
       });
     });
+    it("Throws an error if zero models are fetched.", (done) => {
+      store.one('person').catch((error) => {
+        done();
+      });
+    });
   });
 
   describe(".destroyRecord()", () => {
