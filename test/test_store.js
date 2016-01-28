@@ -74,6 +74,9 @@ describe("lib/store", () => {
   });
 
   describe(".get()", () => {
+    it("Throws an error when calling with a non-existing model.", () => {
+      (() => {store.get('Foobar')}).should.throw();
+    });
     it("Throws an error when calling without an id.", () => {
       (() => store.get('person')).should.throw();
     });
@@ -98,7 +101,10 @@ describe("lib/store", () => {
   });
 
   describe(".all()", () => {
-    it("Throws an error when calling with an extra argument[s].", () => {
+    it("Throws an error when calling with a non-existing model.", () => {
+      (() => {store.all('Foobar')}).should.throw();
+    });
+    it("Throws an error when calling with extra argument[s].", () => {
       (() => store.all('person', 1)).should.throw();
       (() => store.all('person', 1, 2)).should.throw();
     });
