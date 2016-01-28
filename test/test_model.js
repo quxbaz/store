@@ -57,6 +57,14 @@ describe("lib/model", () => {
       }).should.throw();
     });
 
+    it("Throws an error on attempting to get a schema relation that does not exist.", () => {
+      return store.get('zoo', 1).then((zoo) => {
+        (() => {
+          zoo.get('foo');
+        }).should.throw();
+      });
+    });
+
     it("Gets a record and its hasMany records.", () => {
       return store.get('zoo', 1).then((zoo) => {
         return zoo.get('cats');
