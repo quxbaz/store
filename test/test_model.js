@@ -187,6 +187,53 @@ describe("lib/model", () => {
       });
     });
 
+    it("Detaches a record by referencing the record.", () => {
+      let zoo = store.createRecord('zoo');
+      let a = store.createRecord('cat', {zoo: zoo.cid, name: 'a'});
+      let b = store.createRecord('cat', {zoo: zoo.cid, name: 'b'});
+      return zoo.get('cats').then((cats) => {
+        cats.length.should.eql(2);
+        a.detach(zoo);
+        return zoo.get('cats');
+      }).then((cats) => {
+        cats.length.should.eql(1);
+      });
+    });
+
+    it("Does not detach a record when referencing the correct Model, but the wrong record instance.", () => {
+      let zoo = store.createRecord('zoo');
+      let a = store.createRecord('cat', {zoo: zoo.cid, name: 'a'});
+      let b = store.createRecord('cat', {zoo: zoo.cid, name: 'b'});
+      return zoo.get('cats').then((cats) => {
+        cats.length.should.eql(2);
+        let otherZoo = store.createRecord('zoo');
+        a.detach(otherZoo);
+        return zoo.get('cats');
+      }).then((cats) => {
+        cats.length.should.eql(2);
+      });
+    });
+
+    it("Attaches a record.", () => {
+      let zoo = store.createRecord('zoo');
+      let a = store.createRecord('cat', {name: 'a'});
+      let b = store.createRecord('cat', {name: 'b'});
+      a.attach(zoo);
+      return zoo.get('cats').then((cats) => {
+        (cats[0] === a).should.be.true;
+      }).then(() => {
+        b.attach(zoo);
+        return zoo.get('cats');
+      }).then((cats) => {
+        (cats[0] === a).should.be.true;
+        (cats[1] === b).should.be.true;
+        a.detach('zoo');
+        return zoo.get('cats');
+      }).then((cats) => {
+        (cats[0] === b).should.be.true;
+      });
+    });
+
   });
 
 });
