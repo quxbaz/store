@@ -1,4 +1,4 @@
-import Bin from 'lib/bin';
+import Bin from 'bin.js';
 import Server from 'lib/adapters/ls/server';
 
 describe("lib/adapters/server", (done) => {

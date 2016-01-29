@@ -5,6 +5,5 @@ let should = require('chai').should();
 import './test_model';
 import './test_store';
 import './test_util';
-import './test_bin';
 import './test_server';
 // import './test_adapter';
