@@ -1,7 +1,7 @@
 import Store from 'lib/store';
 import LSAdapter from 'lib/adapters/ls/adapter';
 import Model from 'lib/model';
-import {hasMany, belongsTo} from 'lib/relations';
+import {attr, hasMany, belongsTo} from 'lib/relations';
 
 // Model factory function. Returns a function that returns a model.
 let create = (...args) => {
@@ -42,6 +42,7 @@ describe("lib/model", () => {
         cats: hasMany('cat')
       });
       store.registerModel('cat', '/cat/', {
+        name: attr(),
         zoo: belongsTo('zoo')
       });
       server.bin.set('/zoo/1', {id: 1, city: 'chicago'});
@@ -231,6 +232,22 @@ describe("lib/model", () => {
         return zoo.get('cats');
       }).then((cats) => {
         (cats[0] === b).should.be.true;
+      });
+    });
+
+    it("Does not send out properties for saving if the property is not defined in its schema.", () => {
+      store.registerModel('robot', '/robot/', {
+        name: attr(),
+        weapon: attr()
+      });
+      let robot = store.createRecord('robot', {
+        name: 'mx2',
+        weapon: 'cannons',
+        year: 1911
+      });
+      robot.toJSON().should.eql({
+        name: 'mx2',
+        weapon: 'cannons'
       });
     });
 

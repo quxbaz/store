@@ -1,5 +1,6 @@
 import Store from 'lib/store';
 import LSAdapter from 'lib/adapters/ls/adapter';
+import {attr} from 'lib/relations';
 
 describe("lib/store", () => {
 
@@ -12,7 +13,10 @@ describe("lib/store", () => {
     adapter = new LSAdapter();
     server = adapter.server;
     store = new Store({adapter});
-    store.registerModel('person', '/person/');
+    store.registerModel('person', '/person/', {
+      name: attr(),
+      age: attr()
+    });
   })
 
   it("Throws an error on not providing an adapter.", () => {
