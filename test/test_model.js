@@ -39,7 +39,8 @@ describe("lib/model", () => {
 
     beforeEach(() => {
       store.registerModel('zoo', '/zoo/', {
-        cats: hasMany('cat')
+        cats: hasMany('cat'),
+        city: attr()
       });
       store.registerModel('cat', '/cat/', {
         name: attr(),
@@ -235,7 +236,7 @@ describe("lib/model", () => {
       });
     });
 
-    it("Does not send out properties for saving if the property is not defined in its schema.", () => {
+    it("Does not include properties in .toJSON() if the property is not defined in its schema.", () => {
       store.registerModel('robot', '/robot/', {
         name: attr(),
         weapon: attr()
@@ -248,6 +249,16 @@ describe("lib/model", () => {
       robot.toJSON().should.eql({
         name: 'mx2',
         weapon: 'cannons'
+      });
+    });
+
+    it("Strips hasMany attributes in .toJSON()", () => {
+      let zoo = store.createRecord('zoo', {
+        cats: 'will be stripped',
+        city: 'berlin'
+      });
+      zoo.toJSON().should.eql({
+        city: 'berlin'
       });
     });
 
