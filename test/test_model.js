@@ -218,11 +218,11 @@ describe("lib/model", () => {
       let zoo = store.createRecord('zoo');
       let a = store.createRecord('cat', {name: 'a'});
       let b = store.createRecord('cat', {name: 'b'});
-      a.attach(zoo);
+      a.attachTo(zoo);
       return zoo.get('cats').then((cats) => {
         (cats[0] === a).should.be.true;
       }).then(() => {
-        b.attach(zoo);
+        b.attachTo(zoo);
         return zoo.get('cats');
       }).then((cats) => {
         (cats[0] === a).should.be.true;
