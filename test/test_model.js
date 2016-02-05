@@ -262,6 +262,11 @@ describe("lib/model", () => {
       });
     });
 
+    it("Does nothing when destroying an unpersisted record.", () => {
+      let cat = store.createRecord('cat');
+      return cat.destroy();
+    });
+
   });
 
 });
