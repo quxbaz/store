@@ -160,6 +160,21 @@ describe("lib/store", () => {
         records.find(record => record.state.name == 'sam1').should.eql(sam);
       });
     });
+    it("Processes an array argument.", () => {
+      store.registerModel('foo', '/foo/');
+      store.registerModel('bar', '/bar/');
+      let foo = store.createRecord('foo', {name: 'foo'});
+      let bar = store.createRecord('bar', {name: 'bar'});
+      return Promise.all([
+        foo.save(),
+        bar.save()
+      ]).then((lists) => {
+        return store.all(['foo', 'bar']);
+      }).then((lists) => {
+        lists[0][0].should.eql(foo);
+        lists[1][0].should.eql(bar);
+      });
+    });
   });
 
   describe(".one()", () => {
