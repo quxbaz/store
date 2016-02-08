@@ -267,6 +267,16 @@ describe("lib/model", () => {
       return cat.destroy();
     });
 
+    it("Does not call store.saveRecord() if the record is not dirty.", () => {
+      let cat = store.createRecord('cat');
+      return cat.save().then((data) => {
+        store.saveRecord = () => {
+          throw new Error('This should not have been thrown.');
+        };
+        return cat.save();
+      });
+    });
+
   });
 
 });
