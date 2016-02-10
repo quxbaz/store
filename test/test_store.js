@@ -244,4 +244,25 @@ describe("lib/store", () => {
     });
   });
 
+  describe(".alwaysOne()", () => {
+    it("Gets a record if it exists.", () => {
+      server.bin.set('/person/1', {id: 1, name: 'bob'});
+      return store.alwaysOne('person').then((record) => {
+        record.state.should.eql({id: 1, name: 'bob'});
+      });
+    });
+    it("Creates a record if it does not exist.", () => {
+      return store.alwaysOne('person').then((record) => {
+        record.should.exist;
+      });
+    });
+    it("Throws an error on fetching multiple models.", (done) => {
+      server.bin.set('/person/1', {name: 'bob'});
+      server.bin.set('/person/2', {name: 'sam'});
+      store.alwaysOne('person').catch((error) => {
+        done();
+      });
+    });
+  });
+
 });
