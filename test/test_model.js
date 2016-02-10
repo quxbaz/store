@@ -277,6 +277,24 @@ describe("lib/model", () => {
       });
     });
 
+    describe("record.belongsTo()", () => {
+      it("Returns true if a record belongs to another.", () => {
+        let zoo = store.createRecord('zoo');
+        let cat = store.createRecord('cat', {zoo: zoo.cid});
+        cat.belongsTo(zoo).should.be.true;
+      });
+      it("Invokes by id.", () => {
+        let zoo = store.createRecord('zoo', {id: 1});
+        let cat = store.createRecord('cat', {zoo: zoo.state.id});
+        cat.belongsTo(zoo).should.be.true;
+      });
+      it("Returns false if a record does not belong to another.", () => {
+        let zoo = store.createRecord('zoo');
+        let cat = store.createRecord('cat');
+        cat.belongsTo(zoo).should.be.false;
+      });
+    });
+
   });
 
 });
