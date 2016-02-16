@@ -14,6 +14,7 @@ describe("lib/store", () => {
     server = adapter.server;
     store = new Store({adapter});
     store.registerModel('person', '/person/', {
+      id: attr(),
       name: attr(),
       age: attr()
     });
@@ -161,8 +162,14 @@ describe("lib/store", () => {
       });
     });
     it("Processes an array argument.", () => {
-      store.registerModel('foo', '/foo/');
-      store.registerModel('bar', '/bar/');
+      store.registerModel('foo', '/foo/', {
+        id: attr(),
+        name: attr()
+      });
+      store.registerModel('bar', '/bar/', {
+        id: attr(),
+        name: attr()
+      });
       let foo = store.createRecord('foo', {name: 'foo'});
       let bar = store.createRecord('bar', {name: 'bar'});
       return Promise.all([

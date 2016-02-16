@@ -39,10 +39,12 @@ describe("lib/model", () => {
 
     beforeEach(() => {
       store.registerModel('zoo', '/zoo/', {
+        id: attr(),
         cats: hasMany('cat'),
         city: attr()
       });
       store.registerModel('cat', '/cat/', {
+        id: attr(),
         name: attr(),
         zoo: belongsTo('zoo')
       });
@@ -292,6 +294,31 @@ describe("lib/model", () => {
         let zoo = store.createRecord('zoo');
         let cat = store.createRecord('cat');
         cat.belongsTo(zoo).should.be.false;
+      });
+    });
+
+    describe("record.validateState()", () => {
+      it("Calls validateState() as part of setState().", () => {
+        let cat = store.createRecord('cat');
+        cat.validateState = (state) => {
+          return {name: 'newname'};
+        };
+        cat.setState({name: 'bubbles'});
+        cat.state.name.should.eql('newname');
+      });
+      it("Returns a valid state as is.", () => {
+        let cat = store.createRecord('cat');
+        cat.validateState({name: 'kip'}).should.eql({name: 'kip'});
+      });
+      it("Strips any non-schema properties.", () => {
+        let cat = store.createRecord('cat');
+        cat.validateState({toy: 'ball'}).should.eql({});
+        cat.validateState({name: 'kip', toy: 'ball'}).should.eql({name: 'kip'});
+      });
+      it("Strips hasMany properties.", () => {
+        let zoo = store.createRecord('zoo');
+        zoo.validateState({cats: 'foobar'}).should.eql({});
+        zoo.validateState({city: 'bronx', cats: 'foobar'}).should.eql({city: 'bronx'});
       });
     });
 
