@@ -344,4 +344,22 @@ describe("lib/model", () => {
 
   });
 
+  describe("record event emitter", () => {
+    beforeEach(() => {
+      store.registerModel('book', '/book/', {
+        id: attr(),
+        title: attr()
+      });
+    });
+    it("Triggers a change event on .setState()", () => {
+      let book = store.createRecord('book');
+      let spy = 0;
+      book.on('change', () => spy++);
+      book.setState({title: 'animal farm'});
+      spy.should.eql(1);
+      book.setState({title: 'go dog go'});
+      spy.should.eql(2);
+    });
+  });
+
 });
