@@ -109,10 +109,6 @@ describe("lib/store", () => {
     it("Throws an error when calling with a non-existing model.", () => {
       (() => {store.all('Foobar')}).should.throw();
     });
-    it("Throws an error when calling with extra argument[s].", () => {
-      (() => store.all('person', 1)).should.throw();
-      (() => store.all('person', 1, 2)).should.throw();
-    });
     it("Caches multiple records.", () => {
       server.bin.set('/person/1', {n: 1});
       server.bin.set('/person/2', {n: 2});
