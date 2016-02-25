@@ -322,6 +322,26 @@ describe("lib/model", () => {
       });
     });
 
+    describe("record.take()", () => {
+      it("Gets related records synchronously.", () => {
+        return store.all(['zoo', 'cat']).then(([zoo, cats]) => {
+          cats[0].take('zoo').should.eql(zoo[0]);
+          cats[1].take('zoo').should.eql(zoo[0]);
+          zoo[0].take('cats').should.eql(cats);
+        });
+      });
+      it("Throws an error on attempting to take an uncached belongsTo record.", () => {
+        return store.get('cat', 2).then((cat) => {
+          (() => {cat.take('zoo')}).should.throw();
+        });
+      });
+      it("Throws an error on attempting to take an uncached hasMany record.", () => {
+        return store.one('zoo').then((zoo) => {
+          (() => {zoo.take('cats')}).should.throw();
+        });
+      });
+    });
+
   });
 
 });
