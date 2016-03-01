@@ -362,4 +362,15 @@ describe("lib/model", () => {
     });
   });
 
+  describe("Record constructor", () => {
+    it("Creates a shallow copy of the state passed in.", () => {
+      store.registerModel('dog', '/dog/');
+      let state = {name: 'spanky'};
+      let dog = store.createRecord('dog', state);
+      dog.state.name.should.eql('spanky');
+      state.name = 'barks';
+      dog.state.name.should.eql('spanky');
+    });
+  });
+
 });
