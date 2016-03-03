@@ -305,15 +305,28 @@ describe("lib/model", () => {
 
     describe("hasOne relation", () => {
       beforeEach(() => {
-        store.registerModel('house', '/house/');
+        store.registerModel('house', '/house/', {id: attr()});
         store.registerModel('dog', '/dog/', {
+          id: attr(),
           name: attr(),
           house: hasOne('house')
         });
       });
       it("Creates records of a hasOne relation.", () => {
-        // let house = store.createRecord('house');
-        // let dog = store.createRecord('dog', {house});
+        let house = store.createRecord('house');
+        let dog = store.createRecord('dog', {house});
+        return dog.get('house').then((house) => {
+          house.should.eql(house);
+        });
+      });
+      it("Creates a hasOne relation using ids.", () => {
+        let house = store.createRecord('house');
+        let dog = store.createRecord('dog', {house});
+        return house.save().then(
+          () => dog.save()
+        ).then(() => {
+          dog.toJSON().house.should.eql(house.state.id);
+        });
       });
     });
 
