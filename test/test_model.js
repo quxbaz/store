@@ -279,6 +279,12 @@ describe("lib/model", () => {
       });
     });
 
+    it("Defines a belongsTo relationship by passing the record directly.", () => {
+      let zoo = store.createRecord('zoo');
+      let cat = store.createRecord('cat', {zoo});
+      cat.state.zoo.should.eql(zoo.cid);
+    });
+
     describe("record.belongsTo()", () => {
       it("Returns true if a record belongs to another.", () => {
         let zoo = store.createRecord('zoo');
