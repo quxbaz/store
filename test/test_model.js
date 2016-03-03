@@ -1,7 +1,7 @@
 import Store from 'lib/store';
 import LSAdapter from 'lib/adapters/ls/adapter';
 import Model from 'lib/model';
-import {attr, hasMany, belongsTo} from 'lib/relations';
+import {attr, hasOne, hasMany, belongsTo} from 'lib/relations';
 
 // Model factory function. Returns a function that returns a model.
 let create = (...args) => {
@@ -294,6 +294,20 @@ describe("lib/model", () => {
         let zoo = store.createRecord('zoo');
         let cat = store.createRecord('cat');
         cat.belongsTo(zoo).should.be.false;
+      });
+    });
+
+    describe("hasOne relation", () => {
+      beforeEach(() => {
+        store.registerModel('house', '/house/');
+        store.registerModel('dog', '/dog/', {
+          name: attr(),
+          house: hasOne('house')
+        });
+      });
+      it("Creates records of a hasOne relation.", () => {
+        // let house = store.createRecord('house');
+        // let dog = store.createRecord('dog', {house});
       });
     });
 
