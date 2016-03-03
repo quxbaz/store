@@ -373,4 +373,18 @@ describe("lib/model", () => {
     });
   });
 
+  describe("default values", () => {
+    it("Record instantiates with default values.", () => {
+      store.registerModel('bowl', '/bowl/', {
+        radius: attr(50),
+        color: attr('grey'),
+        pattern: attr()
+      });
+      store.createRecord('bowl').state.should.eql({
+        radius: 50,
+        color: 'grey'
+      });
+    });
+  });
+
 });
