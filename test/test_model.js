@@ -418,6 +418,28 @@ describe("lib/model", () => {
         color: 'grey'
       });
     });
+    it("Provides a defaultValue function instead of a value.", () => {
+      let spy = 0;
+      store.registerModel('armor', '/armor/', {
+        count: attr(() => spy++)
+      });
+      store.createRecord('armor').state.count.should.eql(0);
+      store.createRecord('armor').state.count.should.eql(1);
+    });
+    it("Passes a state object into a defaultValue function.", () => {
+      store.registerModel('shirt', '/shirt/', {
+        material: attr(),
+        condition: attr((state) => {
+          if (state.material === 'silk')
+            return 'good';
+          return 'okay';
+        })
+      });
+      let cottonShirt = store.createRecord('shirt', {material: 'cotton'});
+      let silkShirt = store.createRecord('shirt', {material: 'silk'});
+      cottonShirt.state.condition.should.eql('okay');
+      silkShirt.state.condition.should.eql('good');
+    });
   });
 
 });
