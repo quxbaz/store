@@ -1,4 +1,3 @@
-require('source-map-support').install();
 let should = require('chai').should();
 
 // Tests
