@@ -9,7 +9,7 @@
     "es6"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/quxbaz/store.js",
+  "homepage": "https://github.com/quxbaz/store",
   "private": true,
   "ignore": [
     "**/.*",

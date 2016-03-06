@@ -1,5 +1,5 @@
 {
-  "name": "store.js",
+  "name": "store",
   "version": "0.0.1",
   "description": "Data store based on ember-data.",
   "main": "index.js",
@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/quxbaz/store.js.git"
+    "url": "git+https://github.com/quxbaz/store.git"
   },
   "author": "quxbaz",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/quxbaz/store.js/issues"
+    "url": "https://github.com/quxbaz/store/issues"
   },
-  "homepage": "https://github.com/quxbaz/store.js#readme"
+  "homepage": "https://github.com/quxbaz/store#readme"
 }
