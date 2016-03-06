@@ -118,4 +118,12 @@ describe("lib/util", () => {
     });
   });
 
+  describe("value()", () => {
+    it("Gets the values of an object.", () => {
+      util.values({}).should.eql([]);
+      util.values({a:1}).should.eql([1]);
+      util.values({a:1, b:2}).should.eql([1, 2]);
+    });
+  });
+
 });
