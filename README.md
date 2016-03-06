@@ -1,6 +1,8 @@
-store.js
+# store.js
 
-<Usage>
+## Usage
+
+```javascript
 
 store.registerModel('zoo', '/zoo/', {
   cats: relations.hasMany('cat')
@@ -42,3 +44,5 @@ zoo.save().then((data) => {
   }
 
 );
+
+```
