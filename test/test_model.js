@@ -3,13 +3,6 @@ import LSAdapter from 'lib/adapters/ls/adapter';
 import Model from 'lib/model';
 import {attr, hasOne, hasMany, belongsTo} from 'lib/relations';
 
-// Model factory function. Returns a function that returns a model.
-let create = (...args) => {
-  return () => {
-    return new Model(...args);
-  };
-};
-
 describe("lib/model", () => {
 
   let store;
@@ -24,29 +17,31 @@ describe("lib/model", () => {
   });
 
   describe("constructor", () => {
-    it("Throws an error on not providing a url.", () => {
-      create('cat').should.throw();
-    });
+    let create = (...args) => () => new Model(...args);
     it("@url needs to end and begin with a slash.", () => {
-      create('cat', 'cats/').should.throw();
-      create('cat', '/cats').should.throw();
-      create('cat', 'c/at/s').should.throw();
-      create('cat', '/cats/').should.not.throw();
+      create('cat', {url: 'cats/'}).should.throw();
+      create('cat', {url: '/cats'}).should.throw();
+      create('cat', {url: 'c/at/s'}).should.throw();
+      create('cat', {url: '/cats/'}).should.not.throw();
     });
   });
 
   describe("relations", () => {
 
     beforeEach(() => {
-      store.define('zoo', '/zoo/', {
-        id: attr(),
-        cats: hasMany('cat'),
-        city: attr()
+      store.define('zoo', {
+        schema: {
+          id: attr(),
+          cats: hasMany('cat'),
+          city: attr()
+        }
       });
-      store.define('cat', '/cat/', {
-        id: attr(),
-        name: attr(),
-        zoo: belongsTo('zoo')
+      store.define('cat', {
+        schema: {
+          id: attr(),
+          name: attr(),
+          zoo: belongsTo('zoo')
+        }
       });
       server.bin.set('/zoo/1', {id: 1, city: 'chicago'});
       server.bin.set('/cat/2', {id: 2, zoo: 1, name: 'mittens'});
@@ -55,8 +50,10 @@ describe("lib/model", () => {
 
     it("Throws an error on defining a relation that is not a Relation object.", () => {
       (() => {
-        store.define('Beehive', '/beehive/', {
-          bees: 'bees'
+        store.define('beehive', {
+          schema: {
+            bees: 'bees'
+          }
         });
       }).should.throw();
     });
@@ -239,9 +236,11 @@ describe("lib/model", () => {
     });
 
     it("Does not include properties in .toJSON() if the property is not defined in its schema.", () => {
-      store.define('robot', '/robot/', {
-        name: attr(),
-        weapon: attr()
+      store.define('robot', {
+        schema: {
+          name: attr(),
+          weapon: attr()
+        }
       });
       let robot = store.createRecord('robot', {
         name: 'mx2',
@@ -305,11 +304,17 @@ describe("lib/model", () => {
 
     describe("hasOne relation", () => {
       beforeEach(() => {
-        store.define('house', '/house/', {id: attr()});
-        store.define('dog', '/dog/', {
-          id: attr(),
-          name: attr(),
-          house: hasOne('house')
+        store.define('house', {
+          schema: {
+            id: attr()
+          }
+        });
+        store.define('dog', {
+          schema: {
+            id: attr(),
+            name: attr(),
+            house: hasOne('house')
+          }
         });
       });
       it("Creates records of a hasOne relation.", () => {
@@ -379,9 +384,11 @@ describe("lib/model", () => {
 
   describe("record event emitter", () => {
     beforeEach(() => {
-      store.define('book', '/book/', {
-        id: attr(),
-        title: attr()
+      store.define('book', {
+        schema: {
+          id: attr(),
+          title: attr()
+        }
       });
     });
     it("Triggers a change event on .setState()", () => {
@@ -397,7 +404,11 @@ describe("lib/model", () => {
 
   describe("Record constructor", () => {
     it("Creates a shallow copy of the state passed in.", () => {
-      store.define('dog', '/dog/', {name: attr()});
+      store.define('dog', {
+        schema: {
+          name: attr()
+        }
+      });
       let state = {name: 'spanky'};
       let dog = store.createRecord('dog', state);
       dog.state.name.should.eql('spanky');
@@ -408,10 +419,12 @@ describe("lib/model", () => {
 
   describe("default values", () => {
     it("Record instantiates with default values.", () => {
-      store.define('bowl', '/bowl/', {
-        radius: attr(50),
-        color: attr('grey'),
-        pattern: attr()
+      store.define('bowl', {
+        schema: {
+          radius: attr(50),
+          color: attr('grey'),
+          pattern: attr()
+        }
       });
       store.createRecord('bowl').state.should.eql({
         radius: 50,
@@ -420,20 +433,24 @@ describe("lib/model", () => {
     });
     it("Provides a defaultValue function instead of a value.", () => {
       let spy = 0;
-      store.define('armor', '/armor/', {
-        count: attr(() => spy++)
+      store.define('armor', {
+        schema: {
+          count: attr(() => spy++)
+        }
       });
       store.createRecord('armor').state.count.should.eql(0);
       store.createRecord('armor').state.count.should.eql(1);
     });
     it("Passes a state object into a defaultValue function.", () => {
-      store.define('shirt', '/shirt/', {
-        material: attr(),
-        condition: attr((state) => {
-          if (state.material === 'silk')
-            return 'good';
-          return 'okay';
-        })
+      store.define('shirt', {
+        schema: {
+          material: attr(),
+          condition: attr((state) => {
+            if (state.material === 'silk')
+              return 'good';
+            return 'okay';
+          })
+        }
       });
       let cottonShirt = store.createRecord('shirt', {material: 'cotton'});
       let silkShirt = store.createRecord('shirt', {material: 'silk'});

@@ -13,10 +13,12 @@ describe("lib/store", () => {
     adapter = new LSAdapter();
     server = adapter.server;
     store = new Store({adapter});
-    store.define('person', '/person/', {
-      id: attr(),
-      name: attr(),
-      age: attr()
+    store.define('person', {
+      schema: {
+        id: attr(),
+        name: attr(),
+        age: attr()
+      }
     });
   })
 
@@ -158,13 +160,17 @@ describe("lib/store", () => {
       });
     });
     it("Processes an array argument.", () => {
-      store.define('foo', '/foo/', {
-        id: attr(),
-        name: attr()
+      store.define('foo', {
+        schema: {
+          id: attr(),
+          name: attr()
+        }
       });
-      store.define('bar', '/bar/', {
-        id: attr(),
-        name: attr()
+      store.define('bar', {
+        schema: {
+          id: attr(),
+          name: attr()
+        }
       });
       let foo = store.createRecord('foo', {name: 'foo'});
       let bar = store.createRecord('bar', {name: 'bar'});
