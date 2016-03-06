@@ -23,6 +23,7 @@ var config = {
           resolve(__dirname, 'lib/'),
           resolve(__dirname, 'test/'),
           resolve(__dirname, 'node_modules/bin.js/'),
+          resolve(__dirname, 'node_modules/stateful/'),
           resolve(__dirname, 'node_modules/sentry/')
         ],
         query: {
