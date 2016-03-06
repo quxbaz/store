@@ -38,12 +38,12 @@ describe("lib/model", () => {
   describe("relations", () => {
 
     beforeEach(() => {
-      store.registerModel('zoo', '/zoo/', {
+      store.define('zoo', '/zoo/', {
         id: attr(),
         cats: hasMany('cat'),
         city: attr()
       });
-      store.registerModel('cat', '/cat/', {
+      store.define('cat', '/cat/', {
         id: attr(),
         name: attr(),
         zoo: belongsTo('zoo')
@@ -55,7 +55,7 @@ describe("lib/model", () => {
 
     it("Throws an error on defining a relation that is not a Relation object.", () => {
       (() => {
-        store.registerModel('Beehive', '/beehive/', {
+        store.define('Beehive', '/beehive/', {
           bees: 'bees'
         });
       }).should.throw();
@@ -239,7 +239,7 @@ describe("lib/model", () => {
     });
 
     it("Does not include properties in .toJSON() if the property is not defined in its schema.", () => {
-      store.registerModel('robot', '/robot/', {
+      store.define('robot', '/robot/', {
         name: attr(),
         weapon: attr()
       });
@@ -305,8 +305,8 @@ describe("lib/model", () => {
 
     describe("hasOne relation", () => {
       beforeEach(() => {
-        store.registerModel('house', '/house/', {id: attr()});
-        store.registerModel('dog', '/dog/', {
+        store.define('house', '/house/', {id: attr()});
+        store.define('dog', '/dog/', {
           id: attr(),
           name: attr(),
           house: hasOne('house')
@@ -379,7 +379,7 @@ describe("lib/model", () => {
 
   describe("record event emitter", () => {
     beforeEach(() => {
-      store.registerModel('book', '/book/', {
+      store.define('book', '/book/', {
         id: attr(),
         title: attr()
       });
@@ -397,7 +397,7 @@ describe("lib/model", () => {
 
   describe("Record constructor", () => {
     it("Creates a shallow copy of the state passed in.", () => {
-      store.registerModel('dog', '/dog/', {name: attr()});
+      store.define('dog', '/dog/', {name: attr()});
       let state = {name: 'spanky'};
       let dog = store.createRecord('dog', state);
       dog.state.name.should.eql('spanky');
@@ -408,7 +408,7 @@ describe("lib/model", () => {
 
   describe("default values", () => {
     it("Record instantiates with default values.", () => {
-      store.registerModel('bowl', '/bowl/', {
+      store.define('bowl', '/bowl/', {
         radius: attr(50),
         color: attr('grey'),
         pattern: attr()
@@ -420,14 +420,14 @@ describe("lib/model", () => {
     });
     it("Provides a defaultValue function instead of a value.", () => {
       let spy = 0;
-      store.registerModel('armor', '/armor/', {
+      store.define('armor', '/armor/', {
         count: attr(() => spy++)
       });
       store.createRecord('armor').state.count.should.eql(0);
       store.createRecord('armor').state.count.should.eql(1);
     });
     it("Passes a state object into a defaultValue function.", () => {
-      store.registerModel('shirt', '/shirt/', {
+      store.define('shirt', '/shirt/', {
         material: attr(),
         condition: attr((state) => {
           if (state.material === 'silk')
