@@ -27,7 +27,7 @@ describe("lib/store", () => {
   });
 
   it("Saves a record.", () => {
-    let bob = store.createRecord('person', {
+    let bob = store.create('person', {
       name: 'bob',
       age: 42
     });
@@ -40,7 +40,7 @@ describe("lib/store", () => {
   });
 
   it("Updates a record.", () => {
-    let bob = store.createRecord('person', {name: 'bob'});
+    let bob = store.create('person', {name: 'bob'});
     let id;
     return bob.save().then(() => {
       id = bob.state.id;
@@ -52,8 +52,8 @@ describe("lib/store", () => {
   });
 
   it("Saves multiple records.", () => {
-    let bob = store.createRecord('person', {name: 'bob'});
-    let will = store.createRecord('person', {name: 'will'});
+    let bob = store.create('person', {name: 'bob'});
+    let will = store.create('person', {name: 'will'});
     return Promise.all([bob.save(), will.save()]).then(() => {
       bob.state.id.should.exist;
       will.state.id.should.exist;
@@ -64,8 +64,8 @@ describe("lib/store", () => {
 
   it("Fetches multiple records.", () => {
     return Promise.all([
-      store.createRecord('person', {name: 'bob'}).save(),
-      store.createRecord('person', {name: 'will'}).save()
+      store.create('person', {name: 'bob'}).save(),
+      store.create('person', {name: 'will'}).save()
     ]).then(() => {
       return store.all('person').then((persons) => {
         persons.length.should.eql(2);
@@ -76,7 +76,7 @@ describe("lib/store", () => {
   });
 
   it("Does not cache a record if told explicitly told not to.", () => {
-    let record = store.createRecord('person', {name: 'bob'}, false);
+    let record = store.create('person', {name: 'bob'}, false);
     store._cache.person.has(record).should.be.false;
   });
 
@@ -127,7 +127,7 @@ describe("lib/store", () => {
     });
     it("Caches any new records and persists pre-existing ones.", () => {
       // This record should be in the returned data set.
-      let bob = store.createRecord('person', {name: 'bob'});
+      let bob = store.create('person', {name: 'bob'});
       server.bin.set('/person/2', {id: 2, name: 'yola'});
       server.bin.set('/person/3', {id: 3, name: 'gene'});
       return bob.save().then(() => {
@@ -143,8 +143,8 @@ describe("lib/store", () => {
       });
     });
     it("Searches first in the cache instead of making request.", () => {
-      let bob = store.createRecord('person', {name: 'bob'});
-      let sam = store.createRecord('person', {name: 'sam'});
+      let bob = store.create('person', {name: 'bob'});
+      let sam = store.create('person', {name: 'sam'});
       return Promise.all([bob.save(), sam.save()]).then((dataList) => {
         return store.all('person');  // Should set .fetchedAll flag to true.
       }).then((records) => {
@@ -172,8 +172,8 @@ describe("lib/store", () => {
           name: attr()
         }
       });
-      let foo = store.createRecord('foo', {name: 'foo'});
-      let bar = store.createRecord('bar', {name: 'bar'});
+      let foo = store.create('foo', {name: 'foo'});
+      let bar = store.create('bar', {name: 'bar'});
       return Promise.all([
         foo.save(),
         bar.save()
@@ -209,7 +209,7 @@ describe("lib/store", () => {
 
   describe(".destroyRecord()", () => {
     it("Deletes a record", () => {
-      let bob = store.createRecord('person', {name: 'bob'});
+      let bob = store.create('person', {name: 'bob'});
       return bob.save().then(() => {
         return bob.destroy();
       }).then(() => {
@@ -217,8 +217,8 @@ describe("lib/store", () => {
       });
     });
     it("Deletes multiple records.", () => {
-      let bob = store.createRecord('person', {name: 'bob'});
-      let will = store.createRecord('person', {name: 'will'});
+      let bob = store.create('person', {name: 'bob'});
+      let will = store.create('person', {name: 'will'});
       return Promise.all([bob.save(), will.save()]).then(() => {
         return Promise.all([bob.destroy(), will.destroy()]);
       }).then(() => {
@@ -226,7 +226,7 @@ describe("lib/store", () => {
       });
     });
     it("Removes a record from the store cache and underlying datastore on destruction.", () => {
-      let bob = store.createRecord('person', {name: 'bob'});
+      let bob = store.create('person', {name: 'bob'});
       return bob.save().then((data) => {
         store._cache['person'].size.should.eql(1);
         localStorage.length.should.eql(1);
@@ -244,11 +244,11 @@ describe("lib/store", () => {
 
   describe(".cache()", () => {
     it("Caches a record and searches it by id.", () => {
-      let record = store.createRecord('person', {id: 42});
+      let record = store.create('person', {id: 42});
       store.searchCache('person', 42).should.eql(record);
     });
     it("Searches a cached record by cid.", () => {
-      let record = store.createRecord('person');
+      let record = store.create('person');
       store.searchCache('person', record.cid).should.eql(record);
     });
   });

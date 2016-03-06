@@ -85,8 +85,8 @@ describe("lib/model", () => {
     });
 
     it("Gets an unsaved belongsTo record.", () => {
-      let zoo = store.createRecord('zoo', {city: 'bronx'});
-      return store.createRecord('cat', {
+      let zoo = store.create('zoo', {city: 'bronx'});
+      return store.create('cat', {
         zoo: zoo.cid,
         name: 'baggage'
       }).get('zoo').then((record) => {
@@ -99,9 +99,9 @@ describe("lib/model", () => {
       localStorage.clear();
       server.bin.cache = {};
       server.bin.set('/zoo/1', {id: 1});
-      let a = store.createRecord('cat', {zoo: 1, name: 'a'});
-      let b = store.createRecord('cat', {zoo: 1, name: 'b'});
-      let c = store.createRecord('cat', {zoo: 1, name: 'c'});
+      let a = store.create('cat', {zoo: 1, name: 'a'});
+      let b = store.create('cat', {zoo: 1, name: 'b'});
+      let c = store.create('cat', {zoo: 1, name: 'c'});
       return store.get('zoo', 1).then(
         zoo => zoo.get('cats')
       ).then((cats) => {
@@ -111,7 +111,7 @@ describe("lib/model", () => {
     });
 
     it("Gets saved and unsaved hasMany records.", () => {
-      let yowzers = store.createRecord('cat', {zoo: 1, name: 'yowzers'});
+      let yowzers = store.create('cat', {zoo: 1, name: 'yowzers'});
       return store.get('zoo', 1).then(
         () => yowzers.get('zoo')
       ).then(
@@ -123,8 +123,8 @@ describe("lib/model", () => {
     });
 
     it("Does not strip a belongsTo schema relation if the record is persisted.", () => {
-      let zoo = store.createRecord('zoo', {city: 'berlin'});
-      let cat = store.createRecord('cat');
+      let zoo = store.create('zoo', {city: 'berlin'});
+      let cat = store.create('cat');
       return zoo.save().then((data) => {
         cat.setState({zoo: data.id});
         cat.toJSON().should.eql({
@@ -134,8 +134,8 @@ describe("lib/model", () => {
     });
 
     it("Strips the belongsTo schema relation if the record has not been persisted.", () => {
-      let zoo = store.createRecord('zoo', {city: 'berlin'})
-      let brambles = store.createRecord('cat', {
+      let zoo = store.create('zoo', {city: 'berlin'})
+      let brambles = store.create('cat', {
         zoo: zoo.cid,
         name: 'brambles'
       });
@@ -143,8 +143,8 @@ describe("lib/model", () => {
     });
 
     it("Convert cid relations to id values when saving unpersisted records.", () => {
-      let zoo = store.createRecord('zoo');
-      let salty = store.createRecord('cat', {
+      let zoo = store.create('zoo');
+      let salty = store.create('cat', {
         name: 'salty',
         zoo: zoo.cid
       });
@@ -157,16 +157,16 @@ describe("lib/model", () => {
     });
 
     it("Gets unpersisted hasMany records from an unpersisted record.", () => {
-      let zoo = store.createRecord('zoo');
-      let cat = store.createRecord('cat', {zoo: zoo.cid});
+      let zoo = store.create('zoo');
+      let cat = store.create('cat', {zoo: zoo.cid});
       return zoo.get('cats').then((cats) => {
         cats[0].should.eql(cat);
       });
     });
 
     it("Sets a hasMany record's belongTo relation to undefined and does not count it as a reference.", () => {
-      let zoo = store.createRecord('zoo');
-      let cat = store.createRecord('cat', {zoo: zoo.cid});
+      let zoo = store.create('zoo');
+      let cat = store.create('cat', {zoo: zoo.cid});
       return zoo.get('cats').then((cats) => {
         cats[0].should.eql(cat);
         cat.state.zoo = undefined;
@@ -177,8 +177,8 @@ describe("lib/model", () => {
     });
 
     it("Detaches a belongsTo record.", () => {
-      let zoo = store.createRecord('zoo');
-      let cat = store.createRecord('cat', {zoo: zoo.cid});
+      let zoo = store.create('zoo');
+      let cat = store.create('cat', {zoo: zoo.cid});
       return zoo.get('cats').then((cats) => {
         cats[0].should.eql(cat);
         cat.detach('zoo');
@@ -189,9 +189,9 @@ describe("lib/model", () => {
     });
 
     it("Detaches a record by referencing the record.", () => {
-      let zoo = store.createRecord('zoo');
-      let a = store.createRecord('cat', {zoo: zoo.cid, name: 'a'});
-      let b = store.createRecord('cat', {zoo: zoo.cid, name: 'b'});
+      let zoo = store.create('zoo');
+      let a = store.create('cat', {zoo: zoo.cid, name: 'a'});
+      let b = store.create('cat', {zoo: zoo.cid, name: 'b'});
       return zoo.get('cats').then((cats) => {
         cats.length.should.eql(2);
         a.detach(zoo);
@@ -202,12 +202,12 @@ describe("lib/model", () => {
     });
 
     it("Does not detach a record when referencing the correct Model, but the wrong record instance.", () => {
-      let zoo = store.createRecord('zoo');
-      let a = store.createRecord('cat', {zoo: zoo.cid, name: 'a'});
-      let b = store.createRecord('cat', {zoo: zoo.cid, name: 'b'});
+      let zoo = store.create('zoo');
+      let a = store.create('cat', {zoo: zoo.cid, name: 'a'});
+      let b = store.create('cat', {zoo: zoo.cid, name: 'b'});
       return zoo.get('cats').then((cats) => {
         cats.length.should.eql(2);
-        let otherZoo = store.createRecord('zoo');
+        let otherZoo = store.create('zoo');
         a.detach(otherZoo);
         return zoo.get('cats');
       }).then((cats) => {
@@ -216,9 +216,9 @@ describe("lib/model", () => {
     });
 
     it("Attaches a record.", () => {
-      let zoo = store.createRecord('zoo');
-      let a = store.createRecord('cat', {name: 'a'});
-      let b = store.createRecord('cat', {name: 'b'});
+      let zoo = store.create('zoo');
+      let a = store.create('cat', {name: 'a'});
+      let b = store.create('cat', {name: 'b'});
       a.attachTo(zoo);
       return zoo.get('cats').then((cats) => {
         (cats[0] === a).should.be.true;
@@ -242,7 +242,7 @@ describe("lib/model", () => {
           weapon: attr()
         }
       });
-      let robot = store.createRecord('robot', {
+      let robot = store.create('robot', {
         name: 'mx2',
         weapon: 'cannons',
         year: 1911
@@ -254,7 +254,7 @@ describe("lib/model", () => {
     });
 
     it("Strips hasMany attributes in .toJSON()", () => {
-      let zoo = store.createRecord('zoo', {
+      let zoo = store.create('zoo', {
         cats: 'will be stripped',
         city: 'berlin'
       });
@@ -264,12 +264,12 @@ describe("lib/model", () => {
     });
 
     it("Does nothing when destroying an unpersisted record.", () => {
-      let cat = store.createRecord('cat');
+      let cat = store.create('cat');
       return cat.destroy();
     });
 
     it("Does not call store.saveRecord() if the record is not dirty.", () => {
-      let cat = store.createRecord('cat');
+      let cat = store.create('cat');
       return cat.save().then((data) => {
         store.saveRecord = () => {
           throw new Error('This should not have been thrown.');
@@ -279,25 +279,25 @@ describe("lib/model", () => {
     });
 
     it("Defines a belongsTo relationship by passing the record directly.", () => {
-      let zoo = store.createRecord('zoo');
-      let cat = store.createRecord('cat', {zoo});
+      let zoo = store.create('zoo');
+      let cat = store.create('cat', {zoo});
       cat.state.zoo.should.eql(zoo.cid);
     });
 
     describe("record.belongsTo()", () => {
       it("Returns true if a record belongs to another.", () => {
-        let zoo = store.createRecord('zoo');
-        let cat = store.createRecord('cat', {zoo: zoo.cid});
+        let zoo = store.create('zoo');
+        let cat = store.create('cat', {zoo: zoo.cid});
         cat.belongsTo(zoo).should.be.true;
       });
       it("Invokes by id.", () => {
-        let zoo = store.createRecord('zoo', {id: 1});
-        let cat = store.createRecord('cat', {zoo: zoo.state.id});
+        let zoo = store.create('zoo', {id: 1});
+        let cat = store.create('cat', {zoo: zoo.state.id});
         cat.belongsTo(zoo).should.be.true;
       });
       it("Returns false if a record does not belong to another.", () => {
-        let zoo = store.createRecord('zoo');
-        let cat = store.createRecord('cat');
+        let zoo = store.create('zoo');
+        let cat = store.create('cat');
         cat.belongsTo(zoo).should.be.false;
       });
     });
@@ -318,15 +318,15 @@ describe("lib/model", () => {
         });
       });
       it("Creates records of a hasOne relation.", () => {
-        let house = store.createRecord('house');
-        let dog = store.createRecord('dog', {house});
+        let house = store.create('house');
+        let dog = store.create('dog', {house});
         return dog.get('house').then((house) => {
           house.should.eql(house);
         });
       });
       it("Creates a hasOne relation using ids.", () => {
-        let house = store.createRecord('house');
-        let dog = store.createRecord('dog', {house});
+        let house = store.create('house');
+        let dog = store.create('dog', {house});
         return house.save().then(
           () => dog.save()
         ).then(() => {
@@ -337,7 +337,7 @@ describe("lib/model", () => {
 
     describe("record.validateState()", () => {
       it("Calls validateState() as part of setState().", () => {
-        let cat = store.createRecord('cat');
+        let cat = store.create('cat');
         cat.validateState = (state) => {
           return {name: 'newname'};
         };
@@ -345,16 +345,16 @@ describe("lib/model", () => {
         cat.state.name.should.eql('newname');
       });
       it("Returns a valid state as is.", () => {
-        let cat = store.createRecord('cat');
+        let cat = store.create('cat');
         cat.validateState({name: 'kip'}).should.eql({name: 'kip'});
       });
       it("Strips any non-schema properties.", () => {
-        let cat = store.createRecord('cat');
+        let cat = store.create('cat');
         cat.validateState({toy: 'ball'}).should.eql({});
         cat.validateState({name: 'kip', toy: 'ball'}).should.eql({name: 'kip'});
       });
       it("Strips hasMany properties.", () => {
-        let zoo = store.createRecord('zoo');
+        let zoo = store.create('zoo');
         zoo.validateState({cats: 'foobar'}).should.eql({});
         zoo.validateState({city: 'bronx', cats: 'foobar'}).should.eql({city: 'bronx'});
       });
@@ -392,7 +392,7 @@ describe("lib/model", () => {
       });
     });
     it("Triggers a change event on .setState()", () => {
-      let book = store.createRecord('book');
+      let book = store.create('book');
       let spy = 0;
       book.on('change', () => spy++);
       book.setState({title: 'animal farm'});
@@ -410,7 +410,7 @@ describe("lib/model", () => {
         }
       });
       let state = {name: 'spanky'};
-      let dog = store.createRecord('dog', state);
+      let dog = store.create('dog', state);
       dog.state.name.should.eql('spanky');
       state.name = 'barks';
       dog.state.name.should.eql('spanky');
@@ -426,7 +426,7 @@ describe("lib/model", () => {
           pattern: attr()
         }
       });
-      store.createRecord('bowl').state.should.eql({
+      store.create('bowl').state.should.eql({
         radius: 50,
         color: 'grey'
       });
@@ -438,8 +438,8 @@ describe("lib/model", () => {
           count: attr(() => spy++)
         }
       });
-      store.createRecord('armor').state.count.should.eql(0);
-      store.createRecord('armor').state.count.should.eql(1);
+      store.create('armor').state.count.should.eql(0);
+      store.create('armor').state.count.should.eql(1);
     });
     it("Passes a state object into a defaultValue function.", () => {
       store.define('shirt', {
@@ -452,8 +452,8 @@ describe("lib/model", () => {
           })
         }
       });
-      let cottonShirt = store.createRecord('shirt', {material: 'cotton'});
-      let silkShirt = store.createRecord('shirt', {material: 'silk'});
+      let cottonShirt = store.create('shirt', {material: 'cotton'});
+      let silkShirt = store.create('shirt', {material: 'silk'});
       cottonShirt.state.condition.should.eql('okay');
       silkShirt.state.condition.should.eql('good');
     });

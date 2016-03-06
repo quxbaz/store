@@ -10,7 +10,7 @@ store.registerModel('zoo', '/zoo/', {
 
 store.registerModel('cat', '/cat/');
 
-let zoo = store.createRecord('zoo', {city: 'chicago'});
+let zoo = store.create('zoo', {city: 'chicago'});
 
 zoo.save().then((data) => {
 
@@ -25,7 +25,7 @@ zoo.save().then((data) => {
 
 }).then(() => {
 
-  let mittens = store.createRecord('cat', {
+  let mittens = store.create('cat', {
     name: 'mittens'
     zoo: zoo.state.id
   });
