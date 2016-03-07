@@ -51,6 +51,18 @@ describe("lib/util", () => {
     });
   });
 
+  describe("id()", () => {
+    it("Gets the record id or cid.", () => {
+      let record = {
+        cid: 0,
+        state: {id: 1}
+      };
+      util.id(record).should.eql(1);
+      delete record.state.id;
+      util.id(record).should.eql(0);
+    });
+  });
+
   describe("cid()", () => {
     it("Creates 1000 unique cids that all begin with 'c'", () => {
       let cids = new Set();
