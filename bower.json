@@ -4,7 +4,7 @@
   "authors": [
     "David Yeung <quxbaz@gmail.com>"
   ],
-  "description": "",
+  "description": "Data store based on ember-data",
   "moduleType": [
     "es6"
   ],
