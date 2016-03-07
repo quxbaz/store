@@ -322,6 +322,17 @@ describe("lib/model", () => {
       });
     });
 
+    describe("record.getId()", () => {
+      it("Gets a record id or cid.", () => {
+        let record = store.Cat.create();
+        record.getId().should.eql(record.cid);
+        record.setState({id: 'foo'});
+        record.getId().should.eql('foo');
+        record.setState({id: undefined});
+        record.getId().should.eql(record.cid);
+      });
+    });
+
   });
 
   describe("record event emitter", () => {
