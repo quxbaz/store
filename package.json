@@ -1,6 +1,6 @@
 {
   "name": "store",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Data store based on ember-data.",
   "main": "index.js",
   "directories": {
