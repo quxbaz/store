@@ -207,6 +207,19 @@ describe("lib/store", () => {
     });
   });
 
+  describe(".create()", () => {
+    it("Triggers an 'addRecord' event with the record.", () => {
+      let totalAge = 0;
+      store.on('addRecord', (record) => {
+        totalAge += record.state.age;
+      });
+      store.Person.create({age: 1});
+      totalAge.should.eql(1);
+      store.Person.create({age: 2});
+      totalAge.should.eql(3);
+    });
+  });
+
   describe(".destroyRecord()", () => {
     it("Deletes a record", () => {
       let bob = store.create('person', {name: 'bob'});
