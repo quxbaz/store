@@ -1,4 +1,5 @@
 import Store from 'lib/store';
+import Record from 'lib/record';
 import LSAdapter from 'lib/adapters/ls/adapter';
 import Model from 'lib/model';
 import {attr, hasOne, hasMany, belongsTo} from 'lib/relations';
@@ -57,6 +58,12 @@ describe("lib/model", () => {
             }
           });
         }).should.throw();
+      });
+      it("Creates specifies a custom Record class.", () => {
+        class CustomRecord extends Record {}
+        store.define('custom', {RecordClass: CustomRecord});
+        (store.Custom.create({}) instanceof CustomRecord)
+          .should.be.true;
       });
     });
 
