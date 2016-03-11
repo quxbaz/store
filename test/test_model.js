@@ -68,6 +68,17 @@ describe("lib/model", () => {
           }).should.throw();
         });
       });
+      describe("model.hasManyAttrs()", () => {
+        it("Return a list of hasMany schema attributes.", () => {
+          store.define('novel');
+          let {novel} = store.models;
+          novel.hasManyAttrs().should.eql([]);
+          novel.schema.chapters = hasMany('chapter');
+          novel.hasManyAttrs().should.eql(['chapters']);
+          novel.schema.titles = hasMany('titles');
+          novel.hasManyAttrs().should.eql(['chapters', 'titles']);
+        });
+      });
     });
 
     describe("fetching", () => {
