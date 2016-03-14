@@ -20,7 +20,6 @@ store.define('zoo', {
   }
 });
 
-
 store.define('cat', {
   schema: {
     id: attr(),
