@@ -1,4 +1,4 @@
-# store.js
+# store
 
 ## Basic Usage
 
