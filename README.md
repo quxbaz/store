@@ -8,7 +8,7 @@ import store from 'store';
 import {attr, belongsTo, hasMany} from 'store/lib/relations';
 ```
 
-Define your models:
+Define models:
 ```javascript
 store.define('zoo', {
   schema: {
@@ -26,7 +26,7 @@ store.define('cat', {
 });
 ```
 
-Instantiating records:
+Instantiate records:
 ```javascript
 let chicagoZoo = store.Zoo.create({
   city: 'chicago'
@@ -37,22 +37,22 @@ let tiger = store.Cat.create({
 });
 ```
 
-Saving records:
+Save records:
 ```javascript
 zoo.save();
 ```
 
-Mutating records:
+Mutate records:
 ```javascript
 tiger.setState({name: 'Tigger'});
 ```
 
-Destroying records:
+Destroy records:
 ```javascript
 tiger.destroy();
 ```
 
-Listening to changes.
+Listen to changes.
 ```javascript
 tiger.on('change', (state) => {
   console.log(state);
@@ -64,7 +64,7 @@ tiger.setState({
 });
 ```
 
-Retrieving records:
+Retrieve records:
 ```javascript
 // Get a single cat record given an id.
 store.Cat.get(<id>)
@@ -80,9 +80,9 @@ store.Cat.one()
 store.Cat.alwaysOne()
 ```
 
-### Advanced
+### Advanced Usage
 
-Custom record classes:
+Create custom record classes:
 ```javascript
 import Record from 'store/lib/record';
 
@@ -98,7 +98,7 @@ store.define('tabby', {
 });
 ```
 
-Validating record state:
+Validate record state:
 ```javascript
 // Does not pass validation. "hasMany" attributes cannot be set directly.
 zoo.setState({
@@ -112,7 +112,7 @@ zoo.setState({color: 'blue'});
 zoo.state.color === undefined  // -> true
 ```
 
-Custom record state validation:
+Specify custom state validation:
 ```javascript
 class Bengal extends Record {
   validateState(state) {
