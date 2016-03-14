@@ -1,12 +1,15 @@
 # store
 
+
 ## Basic Usage
+
 
 First import everything you need:
 ```javascript
 import store from 'store';
 import {attr, belongsTo, hasMany} from 'store/lib/relations';
 ```
+
 
 Define models:
 ```javascript
@@ -17,6 +20,7 @@ store.define('zoo', {
   }
 });
 
+
 store.define('cat', {
   schema: {
     id: attr(),
@@ -25,6 +29,7 @@ store.define('cat', {
   }
 });
 ```
+
 
 Instantiate records:
 ```javascript
@@ -37,20 +42,24 @@ let tiger = store.Cat.create({
 });
 ```
 
+
 Save records:
 ```javascript
 zoo.save();
 ```
+
 
 Mutate records:
 ```javascript
 tiger.setState({name: 'Tigger'});
 ```
 
+
 Destroy records:
 ```javascript
 tiger.destroy();
 ```
+
 
 Listen to changes.
 ```javascript
@@ -63,6 +72,7 @@ tiger.setState({
   name: 'Whiskers'
 });
 ```
+
 
 Retrieve records:
 ```javascript
@@ -80,11 +90,13 @@ store.Cat.one()
 store.Cat.alwaysOne()
 ```
 
+
 ### Advanced Usage
+
 
 Create custom record classes:
 ```javascript
-import Record from 'store/lib/record';
+im port Record from 'store/lib/record';
 
 class Tabby extends Record {
   meow() {
@@ -97,6 +109,7 @@ store.define('tabby', {
   schema: {...}
 });
 ```
+
 
 Validate record state:
 ```javascript
@@ -112,6 +125,7 @@ zoo.setState({color: 'blue'});
 zoo.state.color === undefined  // -> true
 ```
 
+
 Specify custom state validation:
 ```javascript
 class Bengal extends Record {
@@ -123,6 +137,7 @@ class Bengal extends Record {
   }
 }
 ```
+
 
 store comes with a LocalStorage adapter. Here's how to use it:
 ```javascript
