@@ -116,7 +116,7 @@ describe("lib/store", () => {
       server.bin.set('/person/2', {n: 2});
       server.bin.set('/person/3', {n: 3});
       let compare;
-      return store.all('person').then((records) => {
+      return store.Person.all().then((records) => {
         compare = records;
         return store.all('person');
       }).then((records) => {
