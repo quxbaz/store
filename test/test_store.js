@@ -196,13 +196,37 @@ describe("lib/store", () => {
     it("Throws an error if more than one model is fetched.", (done) => {
       server.bin.set('/person/1', {name: 'bob'});
       server.bin.set('/person/2', {name: 'sam'});
-      store.one('person').catch((error) => {
+      return store.one('person').catch((error) => {
         done();
       });
     });
     it("Throws an error if zero models are fetched.", (done) => {
-      store.one('person').catch((error) => {
+      return store.one('person').catch((error) => {
         done();
+      });
+    });
+    describe("Synchronous operation", () => {
+      it("Fetches a model.", () => {
+        server.bin.set('/person/1', {id: 1, name: 'bob'});
+        return store.Person.all().then(() => {
+          store.Person.one(true).state.should.eql({id: 1, name: 'bob'});
+        });
+      });
+      it("Throws an error on receiving zero models.", () => {
+        return store.Person.all().then(() => {
+          (() => {
+            store.Person.one(true);
+          }).should.throw();
+        });
+      });
+      it("Throws an error on receiving multiple models.", () => {
+        server.bin.set('/person/1', {name: 'bob'});
+        server.bin.set('/person/2', {name: 'sam'});
+        return store.Person.all().then(() => {
+          (() => {
+            store.Person.one(true);
+          }).should.throw();
+        });
       });
     });
   });
