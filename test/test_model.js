@@ -340,6 +340,15 @@ describe("lib/model", () => {
       });
     });
 
+    describe("record.hasId()", () => {
+      it("Returns true if a record matches its id or cid.", () => {
+        let cat = store.Cat.create({id: 42});
+        cat.hasId(cat.cid).should.be.true;
+        cat.hasId(42).should.be.true;
+        cat.hasId(999).should.be.false;
+      });
+    });
+
     describe("record.getId()", () => {
       it("Gets a record id or cid.", () => {
         let record = store.Cat.create();
